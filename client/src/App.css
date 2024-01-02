@@ -1,0 +1,30 @@
+.table {
+    @apply min-w-full bg-white border border-gray-300 rounded-md;
+}
+
+.table th {
+    @apply py-2 px-4 border-b;
+}
+
+.table td {
+    @apply py-2 px-4 border-b;
+}
+
+.btn {
+    @apply px-4 py-2 rounded-md;
+}
+
+.btn-primary {
+    @apply bg-indigo-700 hover:bg-indigo-600 text-white;
+}
+.btn-danger {
+    @apply bg-red-600 hover:bg-red-500 text-white;
+}
+
+.title {
+    @apply font-semibold text-lg;
+}
+
+.search {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5;
+}
