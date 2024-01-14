@@ -13,9 +13,10 @@ const { authenticateToken } = require('./middlewares/authenticateToken');
 // Connect to MongoDB
 connectDB();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 app.use(cors());
+app.use(express.json());
 
 // Your routes and other middleware go here...
 app.get('/api', function (req, res) {

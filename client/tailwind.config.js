@@ -4,7 +4,15 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require('@tailwindcss/forms'), 
+    require("daisyui"),
+  ],
 }

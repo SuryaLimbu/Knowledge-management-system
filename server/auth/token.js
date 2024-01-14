@@ -11,7 +11,7 @@ const Token = async (req, res) => {
 
     try {
         const refreshToken = req.body.token;
-        // console.log(req.body);
+        console.log(req.body);
         console.log('refresh Token: ', refreshToken);
 
         if (!refreshToken) {
@@ -30,7 +30,7 @@ const Token = async (req, res) => {
             return res.status(403).json("Forbidden user not found");
         }
 
-        const newAccessToken = jwt.sign({ userId, role }, accessTokenSecret, { expiresIn: '20m' });
+        const newAccessToken = jwt.sign({ userId, role }, accessTokenSecret, { expiresIn: '1m' });
         const newRefreshToken = jwt.sign({ userId: user.userId }, jwtSecretRefreshKey);
 
         // Inside your login route
@@ -48,12 +48,12 @@ const Token = async (req, res) => {
 
         return res.json({
             userId: user.userId,
-            isAdmin: user.role,
+            userType: user.role,
             newAccessToken,
             newRefreshToken
         });
     } catch (error) {
-        // console.error('Error decoding or querying user:', error);
+        console.error('Error decoding or querying user:', error);
         return res.status(403).json("Forbidden request");
     }
 };

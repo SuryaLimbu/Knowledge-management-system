@@ -1,24 +1,45 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+// Import necessary modules/components
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import './App.css';
-import logo from './logo.svg';
-// import Navbar from './components/ui/navbar/Navbar';
 import Dashboard from './pages/Dashboard';
-// import Users from './pages/Users';
 import Login from './pages/auth/Login';
+import MainLayout from './components/ui/layouts/MainLayout';
+import Users from './pages/Users';
+import { useState } from 'react';
+import LogoutAfterInactivity from './components/LogoutAfterInactivity/LogoutAfterInactivity';
+import { logoutUser } from './components/logout/Logout';
+import { getUser } from './utility/userUtils';
+
+
+interface User {
+  'userId': string
+}
 
 function App() {
-  return (
-    <div className="App bg-slate-100">
+  // const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(getUser());
 
+
+
+  return (
+    <div className="App">
       <Router>
         <Routes>
-          {/* <Route path='/users' element={<Users />} /> */}
-          <Route path='/' element={<Login />} />
-          <Route path='/dashboard' element={<Dashboard />} />
+          {user?.userId ? (
 
+            <Route path='/*' element={<MainLayout />}>
+              <Route path='dashboard' element={<Dashboard />} />
+              <Route path='users' element={<Users />} />
+              {/* Redirect any unmatched routes to Dashboard */}
+              <Route path='*' element={<Navigate to='dashboard' />} />
+            </Route>
+          ) : (
+            <Route path='/' element={<Login />} />
+          )}
+          {/* Redirect to login if the user is not authenticated */}
+          <Route path='*' element={<Navigate to='/' />} />
         </Routes>
-
       </Router>
     </div>
   );

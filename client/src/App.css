@@ -1,3 +1,5 @@
+
+
 .table {
     @apply min-w-full bg-white border border-gray-300 rounded-md;
 }
@@ -17,6 +19,7 @@
 .btn-primary {
     @apply bg-indigo-700 hover:bg-indigo-600 text-white;
 }
+
 .btn-danger {
     @apply bg-red-600 hover:bg-red-500 text-white;
 }

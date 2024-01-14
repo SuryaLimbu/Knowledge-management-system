@@ -1,21 +1,29 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Input from '../../components/form/Input';
 import logo from '../../logo.svg';
 import { Link } from 'react-router-dom';
-import { config } from 'process';
+
 import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
-import { access } from 'fs/promises';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../../store/authSlice';
+import { useAuth } from '../../services/authService';
+
+function Login() {
+    // const dispatch = useDispatch();
+
+    // const navigate = useNavigate();
+    const { handleLogin } = useAuth();
 
 
-const Login = () => {
-    const navigate = useNavigate();
 
-    const apiUrl = process.env.REACT_APP_API_URL;
-    console.log("api: ", apiUrl);
+    // const apiUrl = process.env.REACT_APP_API_URL;
+    // console.log("api: ", apiUrl);\
+    // console.log("open loagin page");
+
 
     const [user, setUser] = useState({
         accessToken: '',
@@ -38,96 +46,21 @@ const Login = () => {
 
 
 
-    const refreshToken = async () => {
+    const onSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/refresh`, { token: user.refreshToken });
-            setUser({
-                ...user,
-                accessToken: response.data.accessToken,
-                refreshToken: response.data.refreshToken,
-            });
-            return response.data;
+            await handleLogin(e, formData);
         } catch (error) {
-            console.log(error);
+
         }
     };
 
-    const axiosJWT = axios.create();
-    axiosJWT.interceptors.request.use(
-        async (config) => {
-            let currentDate = new Date();
-            const decodedToken = jwtDecode(user.accessToken);
-            if (decodedToken?.exp && decodedToken.exp * 1000 < currentDate.getTime()) {
-                const data = await refreshToken();
-                config.headers["authorization"] = `Bearer ${data.accessToken}`;
-            }
-            return config;
-        },
-        (error) => {
-            return Promise.reject(error);
-        }
-    )
 
 
-    const handleLogin = async (e: React.FormEvent) => {
 
 
-        const loginDetails = {
-            userId: formData.userId,
-            password: formData.password
-        }
-        e.preventDefault();
-        console.log('form data', JSON.stringify(formData));
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, JSON.stringify(loginDetails), {
-                headers: { 'Content-Type': 'application/json', }
-            });
-            // console.log("api respose:" + response);
-
-            setUser(response.data);
-            // console.log(user.accessToken);
 
 
-            if (user) {
-                // console.log(user);
-                const accessToken = user.accessToken;
-                console.log(accessToken);
-                // console.log("accesstoken:" + `Bearer ${accessToken}`);
-                // axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-                // Create Auth header with bearer token
-
-                // const authorization = `Bearer ${accessToken}`;
-
-                // console.log("authorization: " + authorization)
-
-                // const verifyResponse = await axios.post(`${process.env.REACT_APP_API_URL}/api/verify`, {
-                //     header: {
-                //         Authorization: `Bearer ${accessToken}`
-                //     }
-                // });
-                const verifyResponse = await axios.post(`${process.env.REACT_APP_API_URL}/api/verify`);
-
-
-                console.log("response verified:", verifyResponse);
-                if (verifyResponse.data.user) {
-                    setUser(response.data.user);
-                    navigate('/dashboard');
-                }
-
-            };
-
-
-        }
-        // console.log(data);
-
-        catch (error) {
-            console.log(error)
-        }
-
-
-    }
 
     return (
         <>
@@ -153,7 +86,7 @@ const Login = () => {
                             <Link to={''} className='hover:text-violet-600'>Forgot Password?</Link>
                         </div>
 
-                        <button type="button" onClick={handleLogin} className='btn btn-primary  w-full'>Login</button>
+                        <button type="button" onClick={onSubmit} className='btn btn-primary  w-full'>Login</button>
                     </form>
                 </div>
             </div>

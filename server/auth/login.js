@@ -13,8 +13,8 @@ const Login = async (req, res) => {
         const { userId, password } = req.body;
         const user = await User.findOne({ userId });
 
-        console.log("hash password: " + user.password);
-        console.log("plain password: " + password);
+        // console.log("hash password: " + user.password);
+        // console.log("plain password: " + password);
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).send('Invalid UserId or Password');
@@ -26,7 +26,7 @@ const Login = async (req, res) => {
             return res.status(500).send('JWT secret refresh key is not defined');
         }
         // generate jwt token
-        const accessToken = jwt.sign({ userId: user.userId }, jwtSecretKey, { expiresIn: '1min' });
+        const accessToken = jwt.sign({ userId: user.userId }, jwtSecretKey, { expiresIn: '30min' });
         const refreshToken = jwt.sign({ userId: user.userId }, jwtSecretRefreshKey);
 
         // Inside your login route
@@ -42,9 +42,9 @@ const Login = async (req, res) => {
             await newRefreshTokenDocument.save();
         }
 
-        return res.json({
+        res.json({
             userId: user.userId,
-            isAdmin: user.role,
+            userType: user.role,
             accessToken,
             refreshToken
         });
