@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import Modal from '../components/Modal';
-import Input from '../components/form/Input';
-import { getUser } from '../utility/userUtils';
-import { getUserFromApi } from '../utility/user/getUsersUtils';
-import avatar from '../icons/blank-profile-picture.png'
+import Modal from '../../components/Modal';
+import Input from '../../components/form/Input';
+import { getUser } from '../../utility/userUtils';
+import { getUserFromApi } from '../../utility/user/getUsersUtils';
+import avatar from '../../icons/blank-profile-picture.png'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import ApiAxiosDelete from '../../utility/apiAxiosDelete';
+
 
 interface User {
     userId: string,
@@ -29,10 +32,12 @@ interface UserDetails {
     updateDate: Date,
 }
 const Users = () => {
- 
+    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [user, setUser] = useState<User | null>(getUser());
     const [userData, setUserData] = useState<UserDetails[] | null>(null);
+    const [deleteId, setDeleteId] = useState<String | null>(null);
+
 
 
     useEffect(() => {
@@ -46,6 +51,39 @@ const Users = () => {
         }
         fetchuserData();
     }, [user]);
+
+    const handleDelete = async (deleteId: String) => {
+        const accessToken = user?.newAccessToken || '';
+
+        try {
+            console.log("handle delete id:", deleteId);
+
+            // Use PATCH or PUT method based on your API for updating user data
+            const response = await ApiAxiosDelete(`users/${deleteId}`, accessToken);
+            console.log(response);
+
+            if (response && response.acknowledged === true) {
+                setIsModalOpen(false);
+                setDeleteId(null);
+                navigate('/users', { state: { success: true, message: 'User Removed successfully!' } });
+                window.location.reload();
+            } else {
+                console.error("Delete user:", response?.data || 'Unexpected error occurred.');
+            }
+        } catch (error) {
+            console.log('Error updating user:', error);
+        }
+    };
+
+
+    // useEffect(() => {
+    //     if (deleteId) {
+    //         handleDelete(deleteId);
+    //         setDeleteId(null); // Reset deleteId after deletion
+    //     }
+    // }, [deleteId, user]);
+
+
 
 
     // Define state variables for form control
@@ -61,16 +99,22 @@ const Users = () => {
 
     });
 
-
-
-
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
+    const deletePanel = () => {
+        const modal = document.getElementById('my_modal_1') as HTMLDialogElement | null;
+        if (modal) {
+            modal.showModal();
+            setIsModalOpen(true);
+        }
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+    const closeModal = () => {
+        const modal = document.getElementById('my_modal_1') as HTMLDialogElement | null;
+        if (modal) {
+            modal.close();
+            setIsModalOpen(false);
+        }
     };
+
 
     // Update state when form fields change
     const handleInputChange = (name: string, value: string) => {
@@ -79,11 +123,27 @@ const Users = () => {
             [name]: value,
         }));
     };
-    const handleSaveModal = (e: React.FormEvent) => {
-        // Access the form data from the current state
-        e.preventDefault();
-        console.log('Form data:', formData);
-    }
+
+    const handleOpenModal = (userId: String) => {
+        // setDeleteId(userId);
+        setIsModalOpen(true);
+    };
+
+
+
+    const handleCloseModal = () => {
+        setDeleteId(null);
+        setIsModalOpen(false);
+    };
+
+    const location = useLocation();
+    const { state } = location;
+
+    // const location = useLocation();
+    // const { state } = location.state || false;
+    // console.log("checking state: ",location);
+    // console.log("checking state: ",location.state);
+
     return (
         <>
             <div className="bg-white flex flex-col w-full h-full gap-4 p-4 rounded">
@@ -96,48 +156,23 @@ const Users = () => {
                         </h1>
                     </div>
                     <div className="">
-                        <button onClick={handleOpenModal} className="btn btn-primary">
+                        <Link to={`/createUser`} className="btn btn-primary">
                             Add User
-                        </button>
-                        <Modal isOpen={isModalOpen} onClose={handleCloseModal} >
-                            {/* Modal Content */}
-                            <div className="p-4">
-                                <h2 className="title">Create New User</h2>
-                                <div>
-                                    <form action="">
-                                        <div className='grid grid-cols-2 gap-2'>
+                        </Link>
 
-                                            <Input type={'text'} placeholder={'Firstname'} id={'firstName'} name={'firstName'} required={true} value={formData.firstName} onChange={(name, value) => handleInputChange(name, value)} />
-
-                                            <Input type={'text'} placeholder={'Lastname'} id={'lastName'} name={'lastName'} required={true} value={formData.lastName} onChange={(name, value) => handleInputChange(name, value)} />
-                                        </div>
-
-                                        <Input type={'text'} placeholder={'Email'} id={'email'} name={'email'} required={true} value={formData.email} onChange={(name, value) => handleInputChange(name, value)} />
-                                        <div className='grid grid-cols-2 gap-2'>
-                                            <Input type={'text'} placeholder={'Phone Number'} id={'contact'} name={'contact'} required={true} value={formData.contact} onChange={(name, value) => handleInputChange(name, value)} />
-                                            <Input type={'date'} placeholder={'Date Of Birth'} id={'dateOfBirth'} name={'dateOfBirth'} required={true} value={formData.dateOfBirth} onChange={(name, value) => handleInputChange(name, value)} />
-                                        </div>
-
-                                        <Input type={'text'} placeholder={'User Address'} id={'address'} name={'address'} required={true} value={formData.address} onChange={(name, value) => handleInputChange(name, value)} />
-                                        <Input type={'text'} placeholder={'PostCode'} id={'postcode'} name={'postcode'} required={true} value={formData.postcode} onChange={(name, value) => handleInputChange(name, value)} />
-                                        <Input type={'file'} placeholder={'Choose Image'} id={'image'} name={'image'} required={false} value={formData.file} onChange={(name, value) => handleInputChange(name, value)} />
-
-
-                                        <div className='flex gap-4 mt-4 '>
-                                            <button onClick={handleSaveModal} className="btn btn-primary w-full">
-                                                Create
-                                            </button>
-                                            <button onClick={handleCloseModal} className="btn btn-danger">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </Modal>
 
                     </div>
                 </div>
+                <div>
+                    {state && state.success && (
+                        <div role="alert" className="alert alert-success text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>{state.message}</span>
+                        </div>
+                    )}
+
+                </div>
+
                 <div className="flex flex-col gap-4 ">
 
                     <div className="flex gap-4 justify-center">
@@ -145,7 +180,8 @@ const Users = () => {
                         <button className="btn-primary btn">Sort By</button>
                     </div>
 
-                    <div className="overflow-x-auto">
+
+                    <div className="">
                         <table className="table">
                             {/* head */}
                             <thead>
@@ -156,8 +192,8 @@ const Users = () => {
                                         </label>
                                     </th>
                                     <th>User ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
+                                    {/* <th>First Name</th>
+                                    <th>Last Name</th> */}
                                     <th>Role</th>
                                     <th>Phone</th>
                                     <th>Gender</th>
@@ -190,10 +226,10 @@ const Users = () => {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                {/* <td>
                                                     {user.firstname}
                                                 </td>
-                                                <td> {user.lastname}</td>
+                                                <td> {user.lastname}</td> */}
                                                 <th>{user.role}</th>
                                                 <th>
                                                     {user.phone}
@@ -208,9 +244,28 @@ const Users = () => {
                                                     {user.profession}
                                                 </th>
                                                 <th>
-                                                    <div className='flex'>
-                                                        <button className='btn btn-square btn-info'>Edit</button>
-                                                        <button className='btn btn-square btn-error'>Delete</button>
+                                                    <div className='flex gap-1 '>
+                                                        <Link to={`/updateUser/${user.userId}`} className='btn btn-square btn-info text-white'>Edit</Link>
+                                                        <button className='btn btn-square btn-error text-white' onClick={() => handleOpenModal(user.userId)} >Delete</button>
+
+                                                        <Modal isOpen={isModalOpen} onClose={handleCloseModal} >
+                                                            <div className="p-4">
+                                                                <h3 className="font-bold text-lg">Delete User</h3>
+                                                                <p className="py-4">Are you sure you want to delete this user?</p>
+                                                                <div className="modal-action">
+                                                                    <form method="dialog">
+                                                                        <button className="btn" onClick={() => handleDelete(user.userId)}>
+                                                                            Delete
+                                                                        </button>
+                                                                        <button className="btn" onClick={handleCloseModal}>
+                                                                            Cancel
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+
+                                                        </Modal>
+
                                                     </div>
 
                                                 </th>

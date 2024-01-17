@@ -1,0 +1,37 @@
+import { useState } from "react";
+import { getUser } from "./userUtils";
+import axios from "axios";
+
+interface User {
+    userId: string;
+    userType: string;
+    newAccessToken: string;
+}
+
+async function ApiAxios(route: string, data: object, accessToken:string) {
+
+
+    try {
+        const response = await axios.post(
+            `${process.env.REACT_APP_PUBLIC_API_URL}/${route}`,
+            data,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        if (response.status === 201) {
+            console.log('User Created');
+            return response.data;
+        } else {
+            console.error('Error fetching user data:', response.status);
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+    }
+}
+
+export default ApiAxios;

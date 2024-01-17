@@ -5,7 +5,7 @@ export async function getUserFromApi(accessToken: string) {
     
     try {
 
-        const response = await axiosJWT.get(`${process.env.REACT_APP_PUBLIC_API_URL}/users`,
+        const response = await axios.get(`${process.env.REACT_APP_PUBLIC_API_URL}/users`,
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,

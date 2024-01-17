@@ -1,7 +1,7 @@
 // Sidebar.tsx
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { PiUsersBold, PiGaugeBold, PiGitBranchBold } from 'react-icons/pi';
+import { PiUsersBold, PiGaugeBold, PiGitBranchBold, PiMegaphone, PiStack, PiUsersThree } from 'react-icons/pi';
 import logo from '../../../logo.svg';
 
 interface SidebarProps {
@@ -38,8 +38,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             onClick={() => handleLinkClick('/')}><span className='pr-4'><PiUsersBold /></span>Users</Link>
                     </li>
                     <li>
-                        <Link to={`users`} className={`flex  py-2 px-4 ${activeLink === '/' ? 'text-blue-500' : ''}`}
+                        <Link to={`branch`} className={`flex  py-2 px-4 ${activeLink === '/' ? 'text-blue-500' : ''}`}
                             onClick={() => handleLinkClick('/')}><span className='pr-4'><PiGitBranchBold /></span>Branchs</Link>
+                    </li>
+                    <li>
+                        <Link to={`client`} className={`flex  py-2 px-4 ${activeLink === '/' ? 'text-blue-500' : ''}`}
+                            onClick={() => handleLinkClick('/')}><span className='pr-4'><PiUsersThree /></span>Clients</Link>
+                    </li>
+                    <li>
+                        <Link to={`project`} className={`flex  py-2 px-4 ${activeLink === '/' ? 'text-blue-500' : ''}`}
+                            onClick={() => handleLinkClick('/')}><span className='pr-4'><PiStack /></span>Projects</Link>
+                    </li>
+                    <li>
+                        <Link to={`announcement`} className={`flex  py-2 px-4 ${activeLink === '/' ? 'text-blue-500' : ''}`}
+                            onClick={() => handleLinkClick('/')}><span className='pr-4'><PiMegaphone /></span>Announcement</Link>
                     </li>
                 </ul>
             </div>
