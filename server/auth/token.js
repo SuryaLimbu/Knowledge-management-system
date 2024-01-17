@@ -30,7 +30,7 @@ const Token = async (req, res) => {
             return res.status(403).json("Forbidden user not found");
         }
 
-        const newAccessToken = jwt.sign({ userId, role }, accessTokenSecret, { expiresIn: '1m' });
+        const newAccessToken = jwt.sign({ userId, role }, accessTokenSecret, { expiresIn: '30m' });
         const newRefreshToken = jwt.sign({ userId: user.userId }, jwtSecretRefreshKey);
 
         // Inside your login route

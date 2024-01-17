@@ -11,12 +11,12 @@ const Logout = async (req, res) => {
         
         // console.log(refreshTokenDocument);
 
-        if (!refreshTokenDocument) {
-            return res.status(401).json({ message: 'Invalid refresh token' });
-        }
+        // if (!refreshTokenDocument) {
+        //     return res.status(401).json({ message: 'Invalid refresh token' });
+        // }
 
         // Remove the refresh token from the database
-        await refreshTokenDocument.deleteOne({ userId });
+        // await refreshTokenDocument.deleteOne({ userId });
 
         res.json({ message: 'Logout successful' });
     } catch (error) {

@@ -26,7 +26,7 @@ const Login = async (req, res) => {
             return res.status(500).send('JWT secret refresh key is not defined');
         }
         // generate jwt token
-        const accessToken = jwt.sign({ userId: user.userId }, jwtSecretKey, { expiresIn: '30min' });
+        const accessToken = jwt.sign({ userId: user.userId }, jwtSecretKey, { expiresIn: '1min' });
         const refreshToken = jwt.sign({ userId: user.userId }, jwtSecretRefreshKey);
 
         // Inside your login route

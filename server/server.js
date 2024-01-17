@@ -28,7 +28,7 @@ app.get('/', function (req, res) {
 
 
 // applying middleware to all routes
-app.use(authenticateToken);
+// app.use(authenticateToken);
 
 // USERS
 const userRouter = require('./routers/usersRoutes');
@@ -41,6 +41,29 @@ app.use('/roles', roleRouter);
 //Professions
 const professionRouter = require('./routers/professionRoutes');
 app.use('/professions', professionRouter);
+
+// Branchs
+const branchRouter = require('./routers/branchRoutes');
+app.use('/branch', branchRouter);
+
+// Branchs
+const clientRouter = require('./routers/clientRoutes');
+app.use('/client', clientRouter);
+
+
+// task
+const taskRouter = require('./routers/taskRoutes');
+app.use('/task', taskRouter);
+
+
+
+// 
+const projectRouter = require('./routers/projectRoutes');
+app.use('/project', projectRouter);
+// 
+
+const announcementRouter = require('./routers/announcementRoutes');
+app.use('/announcement', announcementRouter);
 
 
 

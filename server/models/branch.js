@@ -7,8 +7,8 @@ const branchSchema = new mongoose.Schema ({
     title: {type: String, required: true},
     address: {type: String, required: true},
     country: {type: String, required: true},
-    employees: [User],
-    client:[client]
+    employees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    client:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Client' }]
 
 })
 
