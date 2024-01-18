@@ -119,27 +119,11 @@ export const useAuth = () => {
                         accessToken: response.data.newAccessToken,
                         refreshToken: response.data.newRefreshToken,
                     };
-
-                    // console.log("user data: ", user);
-
-                    // console.log("access Token:", user?.accessToken)
-
                     dispatch(login(loginData));
-
-                    // const sessionId = uuidv4();
-                    // console.log("sessionId: ", sessionId);
-                    // session[sessionId] = response.data.userID;
-                    // session.user = {
-                    //     userId: response.data.userId,
-                    //     userType: response.data.userType,
-
-                    // }
-                    // console.log(session.user);
-
-                    // console.log("view stored state:", localStorage.getItem('user'));
-                    // Wait for the dispatch to complete before navigating
                     navigate('dashboard');
                     window.location.reload();
+             
+                
                 }
             }
         } catch (error) {

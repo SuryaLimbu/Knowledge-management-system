@@ -55,9 +55,20 @@ const Project = () => {
                                         </div>
 
                                         <div className="card-actions items-center justify-between pt-4">
-                                            <progress className="progress progress-success w-56" value="70" max="100"></progress>
+                                            <div>
+                                                <progress className="progress progress-success w-56" value="70" max="100"></progress>
 
-                                            <Link to={`1`} className="btn btn-primary">View Tasks</Link>
+                                            </div>
+                                            <div className="flex flex-row gap-4">
+                                                <div>
+                                                    <button className="btn btn-success text-white">Assign Staff</button>
+                                                </div>
+                                                <div>
+                                                    <Link to={`1`} className="btn btn-primary">View Tasks</Link>
+                                                </div>
+
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
