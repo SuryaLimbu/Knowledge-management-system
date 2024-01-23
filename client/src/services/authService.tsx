@@ -122,7 +122,6 @@ export const useAuth = () => {
                     dispatch(login(loginData));
                     navigate('dashboard');
                     window.location.reload();
-             
                 
                 }
             }
