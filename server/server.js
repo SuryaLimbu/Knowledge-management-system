@@ -22,7 +22,7 @@ app.use(cors());
 app.get('/', function (req, res) {
   res.type('text/plain');
   res.status(200);
-  res.send('Welcome to MongoDB API');
+  // res.send('Welcome to MongoDB API');
   if(connectDB()){
     res.send('DB connected.')
   }
